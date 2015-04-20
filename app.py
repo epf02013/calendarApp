@@ -22,10 +22,15 @@ class user(object):
 		self.doc=doc
 		
 app = Flask(__name__)
+dbName= 'couchbase://localhost/calendarDb'
+
+def connect_db():
+    	return Bucket(dbName)
+db=connect_db()
 
 @app.route("/signup")
 def signup():
-		return render_template("signup.html")
+	return render_template("signup.html")
 
 @app.route("/registerUser")
 def registerUser(form):
@@ -65,15 +70,6 @@ def index() :
 		days = [cal.monthdatescalendar(year, month + 1)]
 
 		return render_template("calendar.html", days = days)
-
-dbName= 'couchbase://localhost/calendarDb'
-
-def connect_db():
-    return Bucket(CONNSTR)
-
-db = connect_db()
-
-
 
 if __name__ == "__main__" : 
 	app.run(debug=True)
