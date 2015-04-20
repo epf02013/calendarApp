@@ -1,6 +1,11 @@
 import datetime
 import calendar
 import time
+import json
+from couchbase.bucket import Bucket
+from couchbase.exceptions import KeyExistsError, NotFoundError
+from couchbase.views.params import Query
+
 from flask import Flask, render_template, request, session, redirect, url_for
 
 
