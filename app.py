@@ -27,6 +27,26 @@ app = Flask(__name__)
 def signup():
 		return render_template("signup.html")
 
+@app.route("/registerUser")
+def registerUser(form):
+	doc={}
+	for k, v in form.items():
+		doc[k]=v
+	if not 'firstName' in doc or not doc['firstName']:
+		return None, ("Must have First Name", 400)
+	if not 'lastName' in doc or not doc['lastName']:
+		return None, ("Must have Last Name", 400)
+	if not 'email' in doc or not doc['email']:
+		return None, ("Must have email", 400)
+	if not 'age' in doc or not doc['age']:
+		return None, ("Must have age", 400)
+	
+	try:
+		db.add(doc['email'],doc)
+		return redirect("/registered")
+	except KeyExistsError:
+		return "Sorry that email is already in use", 400
+
 
 
 @app.route("/")
@@ -52,6 +72,8 @@ def connect_db():
     return Bucket(CONNSTR)
 
 db = connect_db()
+
+
 
 if __name__ == "__main__" : 
 	app.run(debug=True)
