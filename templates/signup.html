@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Sign Up</h2>
+  <form action="{{ url_for('registerUser') }}" method=post>
+    <dl>
+      <dt>First Name:
+      <dd><input type=text name=firstName>
+      <dt>Last Name:
+      <dd><input type=text name=lasstName>
+      <dt>Email:
+      <dd><input type=text name=email>
+      <dt>Age:
+      <dd><input type=text name=age>
+      <dt>Password:
+      <dd><input type=text name=password>
+    </dl>
+  </form>
+{% endblock %}
