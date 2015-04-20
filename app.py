@@ -9,7 +9,24 @@ from couchbase.views.params import Query
 from flask import Flask, render_template, request, session, redirect, url_for
 
 
+class user(object):
+	def _init_(self, firstName, lastName, email, age, doc=None):
+		self.firstName=firstName
+		self.lastName=lastName
+		self.email=email
+		self.age=age
+		if doc and doc.success:
+			doc=doc.value
+		else:
+			doc=None
+		self.doc=doc
+		
 app = Flask(__name__)
+
+@app.route("/signup")
+def signup():
+		return render_template("signup.html")
+
 
 
 @app.route("/")
