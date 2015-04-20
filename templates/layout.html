@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Layout</title>
+  <title> Calendar App </title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <style>
+  .grabber{
+    font-size: 44px;
+    font-weight: 200%;
+    font-family: Times;
+    color: #00004c;
+  }
+
+  </style>
 </head>
 <body>
 
-<nav class="navbar navbar-inverse">
+
+<nav class="navbar">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Ethan Tim Calendar</a>
+      <a class="navbar-brand" href="/">Ethan + Tim's Calendar</a>
     </div>
     <div>
-      <ul class="nav navbar-nav">
-	{% if loggedin %}
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#"></a></li>
-        <li><a href="#">Page 2</a></li>
-        <li><a href="#">Page 3</a></li>
-	{% else %}
-	<li class="active"><a href="#">Login</a></li>
-        {% endif %}
+    {% if loggedin %}
+      <ul class="nav navbar-right">
+        <li><a href="#">Add Event</a></li>
+        <li><a href="#">Page 3</a></li> 
       </ul>
-    </div>
+      </div>
   </div>
 </nav>
-  
+    {% else %}
+    {% block login %}
+    {% endblock %}
+    {% endif %}
+    
+
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% block body %}
+
+    {% endblock %}
+  </div>
+</div>
