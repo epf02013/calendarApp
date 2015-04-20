@@ -24,7 +24,14 @@ def index() :
 
 		return render_template("calendar.html", days = days)
 
+dbName= 'couchbase://localhost/calendarDb'
 
+def connect_db():
+    return Bucket(CONNSTR)
+
+db = connect_db()
 
 if __name__ == "__main__" : 
 	app.run(debug=True)
+	
+	
