@@ -32,9 +32,9 @@ db=connect_db()
 def signup():
 	return render_template("signup.html")
 
-@app.route("/registerUser")
-def registerUser(form):
-	doc={}
+@app.route("/registerUser", methods=['GET', 'POST'])
+def registerUser():
+        doc={}
 	for k, v in form.items():
 		doc[k]=v
 	if not 'firstName' in doc or not doc['firstName']:
@@ -51,7 +51,7 @@ def registerUser(form):
 		return redirect("/registered")
 	except KeyExistsError:
 		return "Sorry that email is already in use", 400
-
+        return render_template("registerUser.html")
 
 
 @app.route("/")
