@@ -18,35 +18,58 @@
 
   </style>
 </head>
+
+
 <body>
+  <div id="fb-root"></div>
+
+  <script>
+  // load the SDK asyncronously 
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "http://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=980574005299790";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  FB.getLoginStatus(function(callback) {
+    if (callback.status === "connected") {
+      var accessToken = callback.authResponse.accessToken;
+      // store the access TOKEN HERE! 
+      // ALSO SEE: 
+    }
+  })
+
+  </script>
 
 
-<nav class="navbar">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Ethan + Tim's Calendar</a>
-    </div>
-    <div>
-
-      <ul class="nav navbar-nav">
-	{% if loggedin %}
-        <li class="active"><a href="/home">Home</a></li>
-        <li class="active"><a href="/logout">Logout</a></li>
-	
-        {% else %}
-	<li class="active"><a href="/login">Login</a></li>
-	<li class="active"><a href="/signup">Sign up</a></li>
-        {% endif %}
-      </ul>
+  <nav class="navbar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Ethan + Tim's Calendar</a>
       </div>
-  </div>
-</nav>
-    {% else %}
+      <div>
+
+        <ul class="nav navbar-nav navbar-right">
+          {% if loggedin %}
+          <li class="active"><a href="/home">Home</a></li>
+          <li class="active"><a href="/logout">Logout</a></li>
+          {% endif %}
+        	<li class="active">
+            <div class="fb-login-button" style="padding-top:15px;" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false"></div>
+          </li>
+
+        	<li class="active"><a href="/signup">Sign up</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
     {% block login %}
     {% endblock %}
-    {% endif %}
     
-
 
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
@@ -55,3 +78,6 @@
     {% endblock %}
   </div>
 </div>
+
+</body>
+

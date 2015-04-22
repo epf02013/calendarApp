@@ -2,9 +2,9 @@ import datetime
 import calendar
 import time
 import json
-from couchbase.bucket import Bucket
-from couchbase.exceptions import KeyExistsError, NotFoundError
-from couchbase.views.params import Query
+#from couchbase.bucket import Bucket
+#from couchbase.exceptions import KeyExistsError, NotFoundError
+#from couchbase.views.params import Query
 
 from flask import Flask, render_template, request, session, redirect, url_for
 
@@ -22,35 +22,35 @@ class user(object):
 		self.doc=doc
 		
 app = Flask(__name__)
-dbName= 'couchbase://localhost/calendarDb'
+#dbName= 'couchbase://localhost/calendarDb'
 
-def connect_db():
-    	return Bucket(dbName)
-db=connect_db()
+#def connect_db():
+#    	return Bucket(dbName)
+#db=connect_db()
 
-@app.route("/signup")
-def signup():
-	return render_template("signup.html")
+#@app.route("/signup")
+#def signup():
+	#return render_template("signup.html")
 
-@app.route("/registerUser")
-def registerUser(form):
-	doc={}
-	for k, v in form.items():
-		doc[k]=v
-	if not 'firstName' in doc or not doc['firstName']:
-		return None, ("Must have First Name", 400)
-	if not 'lastName' in doc or not doc['lastName']:
-		return None, ("Must have Last Name", 400)
-	if not 'email' in doc or not doc['email']:
-		return None, ("Must have email", 400)
-	if not 'age' in doc or not doc['age']:
-		return None, ("Must have age", 400)
+#@app.route("/registerUser")
+#def registerUser(form):
+#	doc={}
+#	for k, v in form.items():
+#		doc[k]=v
+#	if not 'firstName' in doc or not doc['firstName']:
+#		return None, ("Must have First Name", 400)
+#	if not 'lastName' in doc or not doc['lastName']:
+#		return None, ("Must have Last Name", 400)
+#	if not 'email' in doc or not doc['email']:
+#		return None, ("Must have email", 400)
+#	if not 'age' in doc or not doc['age']:
+#		return None, ("Must have age", 400)
 	
-	try:
-		db.add(doc['email'],doc)
-		return redirect("/registered")
-	except KeyExistsError:
-		return "Sorry that email is already in use", 400
+#	try:
+#		db.add(doc['email'],doc)
+#		return redirect("/registered")
+#	except KeyExistsError:
+#		return "Sorry that email is already in use", 400
 
 
 
