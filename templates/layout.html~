@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Calendar App </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <style>
+  .grabber{
+    font-size: 44px;
+    font-weight: 200%;
+    font-family: Times;
+    color: #00004c;
+  }
+  </style>
+</head>
+<body>
+
+
+<nav class="navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Ethan + Tim's Calendar</a>
+    </div>
+    <div>
+
+      <ul class="nav navbar-nav">
+	{% if loggedin %}
+        <li class="active"><a href="/home">Home</a></li>
+        <li class="active"><a href="/logout">Logout</a></li>
+	
+        {% else %}
+	<li class="active"><a href="/login">Login</a></li>
+	<li class="active"><a href="/signup">Sign up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% block login%}
+{% endblock %}
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% block body %}
+
+    {% endblock %}
+  </div>
+</div>
