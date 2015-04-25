@@ -28,9 +28,17 @@ def connect_db():
     	return Bucket(dbName)
 db=connect_db()
 
-#@app.route("/signup")
-#def signup():
-	#return render_template("signup.html")
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+	return render_template("login.html")
+
+
+@app.route("/logout", methods=['GET', 'POST'])
+def logout():
+        session['logged_in']=False
+	return render_template("logout.html")
+
 
 #@app.route("/registerUser")
 #def registerUser(form):
