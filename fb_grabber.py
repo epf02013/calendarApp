@@ -3,6 +3,7 @@ import requests
 import arrow
 import datetime
 from config import FB_ACCESS_TOKEN
+from classifier import get_sentiment
 
 # facebook data extract 
 def get_fb_events(user_id) :
@@ -46,6 +47,11 @@ def format_event(event) :
 	if "end_time" in event.keys(): 
 		new_event["end_time"] = arrow.get(event["end_time"]).format("YYYY-MM-DD HH:mm:ss")
 
+	# now add the document sentiment stuff
+	response = get_sentiment(str(event["name"]))
+	new_event["score"] = response["score"]
+	new_event["sentiment"] = response["sentiment"]
+	
 	return new_event
 
 
