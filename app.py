@@ -5,7 +5,7 @@ import json
 from couchbase.bucket import Bucket
 from couchbase.exceptions import KeyExistsError, NotFoundError
 from couchbase.views.params import Query
-
+import fb_grabber.py
 from flask import Flask, render_template, request, session, redirect, url_for
 
 
@@ -60,22 +60,31 @@ def logout():
 #	except KeyExistsError:
 #		return "Sorry that email is already in use", 400
 
+
+#extra slashes may be because everything is stored in docs as json text and then doc is dumped
 @app.route("/logged_in", methods=['GET', 'POST'])
 def logged_in():
         session['logged_in']=True
         temp=""+request.form['user_info']
         user_info=json.loads(temp)
+        del user_info['gender']
+        del user_info['locale']
+        del user_info['timezone']
+        del user_info['verified']
         user_info['access_token']=request.form['access_token']
         user_id=user_info['id']
         try :
                 db.add(user_id, json.dumps(user_info))
+                user_info['events']=get_fb_events(user_id, user_info['access_token'])
+                db.set(user_id, json.dumps(user_info))
+
         except KeyExistsError:
                 doc=db.get(user_id)
                 doc=doc.value
-                print(temp)
                 doc=json.loads(doc)
                 del doc['access_token']
                 doc['access_token']=user_info['access_token']
+                doc['events']=updateEvents(user_id,doc['access_token'], doc['events'])
                 db.set(user_id, json.dumps(doc))
 
         return render_template("logged_in.html", logged_in="trueuu")

@@ -52,7 +52,7 @@
           
 	  {% else %}
           <li class="active">
-            <div class="fb-login-button" style="padding-top:15px;" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false" onclick="log_in_click()"></div>
+            <div class="fb-login-button" style="padding-top:15px;" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false" onlogin="checkLoginState()"()"></div>
           </li>
 
           <li class="active"><a href="/signup">Sign up</a></li>
@@ -76,3 +76,4 @@
 
 </body>
 
+ 
