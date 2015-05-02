@@ -1,4 +1,4 @@
-from alchemy import AlchemyAPI
+from alchemyapi import AlchemyAPI
 
 alchemyapi = AlchemyAPI()
 
@@ -12,9 +12,9 @@ def get_sentiment(post) :
 				"sentiment" : str(response["docSentiment"]["type"])
 				}
 	else :
-		print "fuck, token must've expired"
+		print ("fuck, token must've expired")
 
 
-print get_sentiment("sometimes I feel very sad")
+print (get_sentiment("sometimes I feel very sad"))
 
-print get_sentiment("other times I love computer science!")
+print (get_sentiment("other times I love computer science!"))

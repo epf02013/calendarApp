@@ -3,6 +3,29 @@
 
 {% block body %}
 
+<script>
+
+$(document).ready(function(){
+
+
+
+    $('[data-toggle="popover"]').popover({
+    	html :true,
+
+    	title: function() {
+      return $("#popover-head").html();
+    },
+    content: function() {
+      return $("#popover-content").html();
+    }
+
+
+    }); 
+
+});
+</script>
+
+
 <hr> 
 
 <table class="table-bordered">
@@ -17,37 +40,60 @@
 </tr>
 
 {% for week in days %} 
+
 	<tr>
 		{% for day in week %}
 		<td class="day" style="height:100px; width:100px;position:relative;"> 
 			<span style="position:absolute; top:0px;right:0px;">
-				<b> {{day.day}} </b>
+				<b onclick="addEvent('{{day.day}}')"> {{day.day}} </b>
 			</span>
 
 			<br>
 
 			<!-- Random For Now -->
 
-			{% if day.day %3 == 0 %}
-			<button type="button" class="btn btn-success" style="position:absolute;bottom:0px; left:0px;">
+	{% set full= False%}		
+	{% for dayy, monthLink in bDays.items() %}
+			
+			  {% set monther=monthLink.1 %}
+		{% if dayy==day.day and not full and monther==day.month %}
+		
+			<button type="button" class="btn btn-success" style="position:absolute;bottom:0px; left:0px;" onclick="window.location.href='{{monthLink.0}}'">
   				<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
-			</button> 
-			{% endif %}
+			</button>
+				{% set full = True %}
+		
+		{% endif %}
+	{% if not full  and loop.last%}
+<div id="popover-head" class="hide">Some title</div>
+		<div id="popover-content" class="hide">
+ 			 <form role="form" action="{{url_for('addEvent')}}" method="post">
+  			  	<div class="form-group">
+  					<label for="name">Event Name:</label>
+    				<input name="name" type="input" class="form-control" id="name">
+				</div>
+				<div class="form-group">
+    				<label for="start_time">Start Time: "YYYY-MM-DD HH:mm:</label> 
 
-			{% if day.day %3 == 1 %}
-			<button type="button" class="btn btn-primary" style="position:absolute;bottom:0px; left:0px;">
-  				<span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>
-			</button> 
-			{% endif %}
+    				<input name="start_time" type="input" class="form-control" id="start_time" ">
+  				</div> 
+  				<div class="form-group">
+    				<label for="end_time">End Time: "YYYY-MM-DD HH:mm:</label> 
+    				<input name="end_time" type="input" class="form-control" id="end_time" >
+  				</div>
+  				
+  				<button type="submit" class="btn btn-success">Add Event</button>
+  			</form>
+		</div>
+		</div>
 
+		<button  data-toggle="popover" style="position:absolute;top:0px; left:0px;" type="button" class="btn btn-primary btn-xs" ><span class="glyphicon glyphicon-plus"></span></button>
+	{% endif %}
 
-			{% if day.day %3 == 2 %}
-			<button type="button" class="btn btn-info" style="position:absolute;bottom:0px; left:0px;">
-  				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-			</button> 
-			{% endif %}
+	{% endfor %}
+	{{empty}}
 
-
+</br>
 		</td>
 		{% endfor %}
 	</tr>
