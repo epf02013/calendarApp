@@ -1,32 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Layout</title>
+  <title> Calendar App </title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-</head>
-<body>
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Ethan Tim Calendar</a>
+  <style>
+  .grabber{
+    font-size: 44px;
+    font-weight: 200%;
+    font-family: Times;
+    color: #00004c;
+  }
+
+  </style>
+</head>
+
+
+<body>
+  <div id="fb-root"></div>
+<script>
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "http://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=980574005299790";;
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+{% block header %}
+
+{% endblock %}
+<input name="logInStatus" type="hidden" value="{{logged_in}}">
+
+  <nav class="navbar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Ethan + Tim's Calendar</a>
+      </div>
+      <div>
+
+        <ul class="nav navbar-nav navbar-right">
+          {% if session['logged_in'] %}
+          <li class="active"><a href="/">Home</a></li>
+          <li class="active"><a href="/logout">Logout</a></li>
+          
+	  {% else %}
+          <li class="active">
+            <div class="fb-login-button" style="padding-top:15px;" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false" onlogin="checkLoginState()"></div>
+          </li>
+
+          <li class="active"><a href="/signup">Sign up</a></li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
-    <div>
-      <ul class="nav navbar-nav">
-	{% if loggedin %}
-        <li class="active"><a href="/home">Home</a></li>
-        <li class="active"><a href="/logout">Logout</a></li>
-	
-        {% else %}
-	<li class="active"><a href="/login">Login</a></li>
-	<li class="active"><a href="/signup">Sign up</a></li>
-        {% endif %}
-      </ul>
-    </div>
+  </nav>
+
+    {% block login %}
+    {% endblock %}
+    
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% block body %}
+
+    {% endblock %}
   </div>
-</nav>
-  
+</div>
+
+</body>
+
+ 
