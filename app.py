@@ -1,30 +1,17 @@
-import datetime 
-import calendar
-import time
-import json
-from couchbase.bucket import Bucket
+import datetime, calendar, json, time               # utility libraries
+from couchbase.bucket import Bucket                 # we need this to link up to the DB 
 from couchbase.exceptions import KeyExistsError, NotFoundError
 from couchbase.views.params import Query
-from fb_grabber import get_fb_events, updateEvents, format_event
+from fb_grabber import get_fb_events, updateEvents, format_event       
 from flask import Flask, render_template, request, session, redirect, url_for
+from models import user, dbName                           # M in MVC
+
 
 bDays={}
 
-class user(object):
-    def _init_(self, firstName, lastName, email, age, doc=None):
-        self.firstName=firstName
-        self.lastName=lastName
-        self.email=email
-        self.age=age
-        if doc and doc.success:
-            doc=doc.value
-        else:
-            doc=None
-            self.doc=doc
-
 app = Flask(__name__)
-dbName= 'couchbase://localhost/calendarDb'
 
+# connect to Couchbase 
 def connect_db():
     return Bucket(dbName)
 db=connect_db()
@@ -37,155 +24,117 @@ def login():
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
+    # Change the session variable which is responsive on all pages
     session['logged_in']=False
     return render_template("logout.html")
 
-#@app.route("/registerUser")
-#def registerUser(form):
-#   doc={}
-#   for k, v in form.items():
-#       doc[k]=v
-#   if not 'firstName' in doc or not doc['firstName']:
-#       return None, ("Must have First Name", 400)
-#   if not 'lastName' in doc or not doc['lastName']:
-#       return None, ("Must have Last Name", 400)
-#   if not 'email' in doc or not doc['email']:
-#       return None, ("Must have email", 400)
-#   if not 'age' in doc or not doc['age']:
-#       return None, ("Must have age", 400)
 
-#   try:
-#       db.add(doc['email'],doc)
-#       return redirect("/registered")
-#   except KeyExistsError:
-#       return "Sorry that email is already in use", 400
-
-
-#extra slashes may be because everything is stored in docs as json text and then doc is dumped
 @app.route("/addEvent", methods=['GET', 'POST'])
 def addEvent():
-    print("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    # add a new event given a date, time, event name
+
+    # use the calendar library for calendar manipulation
     cal  = calendar.Calendar()
     year = time.localtime()[0]
     month = time.localtime()[1]
     days = cal.monthdatescalendar(year, month)    
 
-    doc=db.get(session['user_id'])
-    doc=doc.value
-    doc=json.loads(doc)
-    print (doc['events'])
-    pop=json.loads(doc['events'])
-    temp=pop['data']
-    print('HOOOOOOP'+json.dumps(temp))
+    # call db to get user events
+    doc = db.get(session['user_id'])
+    doc = doc.value
+    doc = json.loads(doc)
+    pop = json.loads(doc['events'])
+    temp = pop['data']
+    
+    # add the new event to the DB
     new_event = {}
     new_event["name"] = request.form["name"]
     new_event["id"] = request.form["name"]+request.form['start_time'] 
-    new_event['start_time']=request.form['start_time']
-    new_event['end_time']=request.form['end_time']
+    new_event['start_time'] = request.form['start_time']
+    new_event['end_time'] = request.form['end_time']
     temp.append(format_event(new_event))
     pop['data']=temp
     doc['events']=json.dumps(pop)
+    # store the JSON blob into DB with primary key: user_id
     db.set(session['user_id'], json.dumps(doc))
-    print("PLOP"+doc['events'])
+    
     global bDays
     temp=bDays
-    print("OYOYOY")
-    print(request.form['start_time'])
-    print(int(new_event['start_time'][8:10]))
-    print(bDays)
     temp[int(new_event['start_time'][8:10])]=("plop", int(request.form['start_time'][5:7]))
     bdays=temp
-    print("woah woah woah")
-    print(bDays)
     return render_template("calendar.html", days=days, bDays=bDays)
+
 
 @app.route("/logged_in", methods=['GET', 'POST'])
 def logged_in():
+    # calendar manipulation
     cal  = calendar.Calendar()
-
     year = time.localtime()[0]
     month = time.localtime()[1]
-
     days = cal.monthdatescalendar(year, month)
 
+    # logged_in session variable is now T
     session['logged_in']=True
-    temp=""+request.form['user_info']
+    temp=str(request.form['user_info'])
     user_info=json.loads(temp)
-    print("one")
+    
+    # we don't really care about some of the stuff facebook returns, so we delete it 
+    # so it doesn't get waste space in the database 
     del user_info['gender']
     del user_info['locale']
     del user_info['timezone']
     del user_info['verified']
-    print("two")
-    user_info['access_token']=request.form['access_token']
-    print("wooahhh bufdyy0"+user_info['access_token'])
+    
+    user_info['access_token'] = request.form['access_token']
     user_id=user_info['id']
+    # try getting the users facebook events, could result in some exception
     try :
-        #print("thtre")
-        #print(request.form)
-        session['user_id']=user_id
-        #print("four") 
+        # set the session variable, an add the user to the database
+        session['user_id'] = user_id
         db.add(user_id, json.dumps(user_info))
-        #print("five")
-        user_info['events']=get_fb_events(request.form['user_events'])
-        #print("fellooowwww")
-        temp=json.loads(user_info['events'])
+        # try to get facebook events 
+        user_info['events'] = get_fb_events(request.form['user_events'])
+        temp = json.loads(user_info['events'])
         db.set(user_id, json.dumps(user_info))
-        doc=db.get(user_id)
-        doc=doc.value
-        doc=json.loads(doc)
-        temp=json.loads(doc['events'])
     except KeyExistsError:
-        doc=db.get(user_id)
-        doc=doc.value
-        doc=json.loads(doc)
+        doc = db.get(user_id)
+        doc = doc.value
+        doc = json.loads(doc)
         del doc['access_token']
-        doc['access_token']=user_info['access_token']
-        #print("five")
-        #print(request.form['user_events'])
-        #print("six")
-        doc['events']=updateEvents(request.form['user_events'], doc['events'])
-        temp=json.loads(doc['events'])
+        doc['access_token'] = user_info['access_token']
+        doc['events'] = updateEvents(request.form['user_events'], doc['events'])
+        temp = json.loads(doc['events'])
         db.set(user_id, json.dumps(doc))
+    
     eventsDays={}
-    #print("ploppp")
-    #print("LOLOLOLO"+temp)
-    print(json.dumps(temp))
-
     for event in temp['data'] :
-        #print("lopp")
-        #print(event)
         eventsDays[int(event['start_time'][8:10])]=("https://www.facebook.com/events/"+event['id'], int(event['start_time'][5:7]))
-        #print(eventsDays)
     global bDays
     bDays=eventsDays
     return render_template("calendar.html", days=days, bDays=bDays)
+
+
 @app.route("/")
 def index() :
     user_id = session.get("user_id")
     
-    #if not user_id :
-    #   return render_template("login.html")
-    #else:
-    #   user = db.User.get_from_id(user_id)
-        
+    # calendar stuff
     cal  = calendar.Calendar()
-    
     year = time.localtime()[0]
     month = time.localtime()[1]
     days = cal.monthdatescalendar(year, month )
     global bDays
-    #print(bDays)
+
     try:
         if (session['logged_in']) :
             return render_template("calendar.html", days =days, bDays=bDays)
         else:
-            #print("fuck this")
             return render_template("login.html")
     except KeyError:
-        #print("fuck er")
         return render_template("login.html")
 
+
+# this is where we run the app!
 if __name__ == "__main__" : 
     app.secret_key="secretive_key"
     app.run(debug=True)
