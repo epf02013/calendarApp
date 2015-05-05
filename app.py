@@ -113,6 +113,30 @@ def logged_in():
     bDays=eventsDays
     return render_template("calendar.html", days=days, bDays=bDays)
 
+@app.route("/manager", methods=["GET", "POST"])
+def manager():
+    
+    if session.get("isAdmin") :
+        q = Query
+        q.limit = 100
+        q.skip = 1
+        users = {"tim": "timkaye", "ethan" : "ethanCaleb"}
+        return render_template("manager.html", users=users)
+    else :
+        return render_template("login.html")
+
+    if request.method == "POST": 
+        # Oh, we got a post request
+        userToDelete = str(request.form["deleteID"])
+        try: 
+            db.delete(userToDelete)
+        except KeyExistsError :
+            print "Couldn't delete userID: %s" % userToDelete
+
+        return render_template("manager.html")
+
+
+
 
 @app.route("/")
 def index() :
