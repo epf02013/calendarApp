@@ -61,7 +61,6 @@ def logout():
 #       return "Sorry that email is already in use", 400
 
 
-#extra slashes may be because everything is stored in docs as json text and then doc is dumped
 @app.route("/addEvent", methods=['GET', 'POST'])
 def addEvent():
     print("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
@@ -82,6 +81,7 @@ def addEvent():
     new_event["id"] = request.form["name"]+request.form['start_time'] 
     new_event['start_time']=request.form['start_time']
     new_event['end_time']=request.form['end_time']
+    temp_event=format_event(new_event)
     temp.append(format_event(new_event))
     pop['data']=temp
     doc['events']=json.dumps(pop)
@@ -93,7 +93,7 @@ def addEvent():
     print(request.form['start_time'])
     print(int(new_event['start_time'][8:10]))
     print(bDays)
-    temp[int(new_event['start_time'][8:10])]=("plop", int(request.form['start_time'][5:7]))
+    temp[int(new_event['start_time'][8:10])]=(("#", temp_event['sentiment']), (int(request.form['start_time'][5:7]), temp_event['name']))
     bdays=temp
     print("woah woah woah")
     print(bDays)
@@ -155,7 +155,13 @@ def logged_in():
     for event in temp['data'] :
         #print("lopp")
         #print(event)
-        eventsDays[int(event['start_time'][8:10])]=("https://www.facebook.com/events/"+event['id'], int(event['start_time'][5:7]))
+        url="#"
+        try :
+            int(event['id'])
+            url="https://www.facebook.com/events/"+event['id']
+        except :
+            url="#"
+        eventsDays[int(event['start_time'][8:10])]=((url, event['sentiment']), (int(event['start_time'][5:7]), event['name']))
         #print(eventsDays)
     global bDays
     bDays=eventsDays

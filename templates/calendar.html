@@ -7,21 +7,10 @@
 
 $(document).ready(function(){
 
-
-
     $('[data-toggle="popover"]').popover({
-    	html :true,
-
-    	title: function() {
-      return $("#popover-head").html();
-    },
-    content: function() {
-      return $("#popover-content").html();
-    }
-
-
+    	html:true,
+    	container:'body'
     }); 
-
 });
 </script>
 
@@ -52,22 +41,43 @@ $(document).ready(function(){
 
 			<!-- Random For Now -->
 
-	{% set full= False%}		
+	{% set full= False%} <!--Boolean for whether or not an event was added in this day-->		
 	{% for dayy, monthLink in bDays.items() %}
-			
-			  {% set monther=monthLink.1 %}
-		{% if dayy==day.day and not full and monther==day.month %}
-		
-			<button type="button" class="btn btn-success" style="position:absolute;bottom:0px; left:0px;" onclick="window.location.href='{{monthLink.0}}'">
+	<!-- can remove the not full  check here and maybe do a for loop-->
+		{% if dayy==day.day and not full and monthLink.1.0==day.month %}
+			{% if monthLink.0.0=="#" %}				
+    				<button data-toggle="popover"
+						{% if monthLink.0.1=="positive"  %}
+							class="btn btn-success"container: 'body'
+						{% elif monthLink.0.1=="negative" %}
+							class="btn btn-danger"
+						{% else %} 
+							class="btn btn-warning"
+						{% endif %}
+						style="position:absolute;bottom:0px; left:0px;"
+						data-content='<h1 class="text-primary">{{monthLink.1.1}}</h1>'
+
+						>
+  						<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
+					</button>
+   			{% else %}
+				<button type="button" 
+				{% if monthLink.0.1=="positive"  %}
+					class="btn btn-success"
+				{% elif monthLink.0.1=="negative" %}
+					class="btn btn-danger"
+				{% else %} 
+					class="btn btn-warning"
+				{% endif %}
+				style="position:absolute;bottom:0px; left:0px;" onclick="window.location.href='{{monthLink.0.0}}'">
   				<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
 			</button>
 				{% set full = True %}
-		
+		{% endif %}
 		{% endif %}
 	{% if not full  and loop.last%}
-<div id="popover-head" class="hide">Some title</div>
-		<div id="popover-content" class="hide">
- 			 <form role="form" action="{{url_for('addEvent')}}" method="post">
+
+		<button  data-toggle="popover" style="position:absolute;top:0px; left:0px;" type="button" class="btn btn-primary btn-xs" data-content='<form role="form" action="{{url_for('addEvent')}}" method="post">
   			  	<div class="form-group">
   					<label for="name">Event Name:</label>
     				<input name="name" type="input" class="form-control" id="name">
@@ -83,11 +93,10 @@ $(document).ready(function(){
   				</div>
   				
   				<button type="submit" class="btn btn-success">Add Event</button>
-  			</form>
-		</div>
-		</div>
-
-		<button  data-toggle="popover" style="position:absolute;top:0px; left:0px;" type="button" class="btn btn-primary btn-xs" ><span class="glyphicon glyphicon-plus"></span></button>
+  			</form>'>
+			<span class="glyphicon glyphicon-plus">
+			</span>
+		</button>
 	{% endif %}
 
 	{% endfor %}
