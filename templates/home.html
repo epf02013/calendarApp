@@ -1,9 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-
-<h2> It compiled ! </h2>
+{% if session['logged_in'] %}
+<h1>Woooooo<h1>
+{% endif %}
 {% endblock %}
-
-</body>
-
-</html>
