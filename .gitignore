@@ -1,0 +1,22 @@
+# Compiled Stuff #
+*.pyc
+
+.DS_STORE
+.DS_STORE?
+
+api_key.txt
+
+alchemyapi_python
+
+*.py~
+
+*.pyc
+
+#*.py
+
+#classifier.py#
+
+\#classifier.py#
+
+
+
