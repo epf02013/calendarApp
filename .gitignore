@@ -1,3 +1,4 @@
+
 # Compiled Stuff #
 *.pyc
 
@@ -8,6 +9,7 @@ api_key.txt
 
 alchemyapi_python
 
+
 *.py~
 
 *.pyc
@@ -17,6 +19,5 @@ alchemyapi_python
 #classifier.py#
 
 \#classifier.py#
-
 
 
