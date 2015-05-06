@@ -21,6 +21,12 @@ $(document).ready(function(){
 </script>
 
 
+{% if inputError %}
+
+	<h2 class="text-danger">Uh oh Looks Like you entered Something Incorrectly</h2>
+
+{% endif %}
+
 <hr> 
 
 <table class="table-bordered">
@@ -68,7 +74,7 @@ $(document).ready(function(){
 						{% elif monthLink.0.1=="negative" %}
 							class="btn btn-danger"
 						{% else %} 
-							class="btn btn-warning"
+							class="btn btn-hazard"
 						{% endif %}
 						data-content='<h1 class="text-primary">{{monthLink.1.1}}</h1>'
 
@@ -84,7 +90,7 @@ $(document).ready(function(){
 				{% elif monthLink.0.1=="negative" %}
 					class="btn btn-danger"
 				{% else %} 
-					class="btn btn-warning"
+					class="btn btn-hazard
 				{% endif %}
 				onclick="window.location.href='{{monthLink.0.0}}'">
   				<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
@@ -126,5 +132,6 @@ $(document).ready(function(){
 	</tr>
 {% endfor %}
 </table>
+
 
 {% endblock %}

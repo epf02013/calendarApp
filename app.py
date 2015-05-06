@@ -134,9 +134,26 @@ def addEvent():
     month = time.localtime()[1]
     days = cal.monthdatescalendar(year, month)    
 
+    global bDays
+
     #Test for imporoper input
 
+    isError=False
+    if request.form['name']=="" :
+        isError=True
+    if request.form['start_time']=="" :
+        isError=True
+    if request.form['end_time']=="" :
+        isError=True
 
+    if isError :
+        return render_template("calendar.html", days=days, bDays=bDays, inputError=True)
+
+    if len(request.form['start_time'])<16 :
+        the_start_time=request.form['start_time']+" 00:00:00"
+
+    if len(request.form['end_time'])<16 :
+        the_end_time=request.form['end_time']+" 00:00:00"
 
     doc=db.get(session['user_id'])
     doc=doc.value
@@ -148,15 +165,15 @@ def addEvent():
     new_event = {}
     new_event["name"] = request.form["name"]
     new_event["id"] = request.form["name"]+request.form['start_time'] 
-    new_event['start_time']=request.form['start_time']
-    new_event['end_time']=request.form['end_time']
+    new_event['start_time']=the_start_time
+    new_event['end_time']=the_end_time
     temp_event=format_event(new_event)
     temp.append(format_event(new_event))
     pop['data']=temp
     doc['events']=json.dumps(pop)
     db.set(session['user_id'], json.dumps(doc))
     print("PLOP"+doc['events'])
-    global bDays
+    
     temp=bDays
     print("OYOYOY")
     print(request.form['start_time'])
