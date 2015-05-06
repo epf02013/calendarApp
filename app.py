@@ -6,10 +6,12 @@ from fb_grabber import get_fb_events, updateEvents, format_event
 from flask import Flask, render_template, request, session, redirect, url_for
 from models import user, dbName                           # M in MVC
 
-
+# useful variables 
 bDays={}
 
+# create the app lazily 
 app = Flask(__name__)
+
 
 # connect to Couchbase 
 def connect_db():
@@ -162,7 +164,7 @@ def index() :
 def page_not_found(e):
     return render_template("404.html"), 404
 
-    
+
 
 # this is where we run the app!
 if __name__ == "__main__" : 
