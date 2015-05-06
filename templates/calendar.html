@@ -7,24 +7,25 @@
 
 $(document).ready(function(){
 
-
-
-    $('[data-toggle="popover"]').popover({
-    	html :true,
-
-    	title: function() {
-      return $("#popover-head").html();
-    },
-    content: function() {
-      return $("#popover-content").html();
-    }
-
-
+    $('[data-toggle="popovers"]').popover({
+    	html:true,
+    	container:'body'
     }); 
 
+    $('[data-toggle="popover"]').popover({
+    	trigger:'hover',
+    	html:true,
+    	container:'body'
+    }); 
 });
 </script>
 
+
+{% if inputError %}
+
+	<h2 class="text-danger">Uh oh Looks Like you entered Something Incorrectly</h2>
+
+{% endif %}
 
 <hr> 
 
@@ -52,42 +53,74 @@ $(document).ready(function(){
 
 			<!-- Random For Now -->
 
-	{% set full= False%}		
-	{% for dayy, monthLink in bDays.items() %}
-			
-			  {% set monther=monthLink.1 %}
-		{% if dayy==day.day and not full and monther==day.month %}
-		
-			<button type="button" class="btn btn-success" style="position:absolute;bottom:0px; left:0px;" onclick="window.location.href='{{monthLink.0}}'">
+	{% set full= False%} <!--Boolean for whether or not an event was added in this day-->		
+	
+	{% for dayy, set_of_events in bDays.items() %}
+	<!-- can remove the not full  check here and maybe do a for loop-->
+	{% if dayy==day.day and not full %}
+		<div class="dropdown" style="position:absolute;bottom:-0px; left:0px;">
+  <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" >Events
+  <span class="caret"></span></button>
+<ul class="dropdown-menu">
+		{% set full=true %}
+	{% endif %}
+
+		{% for monthLink in set_of_events  %}
+		{% if dayy==day.day and monthLink.1.0==day.month %}
+			{% if monthLink.0.0=="#" %}				
+    				<li><button data-toggle="popover"
+						{% if monthLink.0.1=="positive"  %}
+							class="btn btn-success"container: 'body'
+						{% elif monthLink.0.1=="negative" %}
+							class="btn btn-danger"
+						{% else %} 
+							class="btn btn-hazard"
+						{% endif %}
+						data-content='<h1 class="text-primary">{{monthLink.1.1}}</h1>'
+
+						>
+  						<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
+					</button></li>
+   			{% else %}
+				<li><button type="button" 
+				data-toggle="popover"
+				data-content='<h1 class="text-primary">{{monthLink.1.1}}</h1>'
+				{% if monthLink.0.1=="positive"  %}
+					class="btn btn-success"
+				{% elif monthLink.0.1=="negative" %}
+					class="btn btn-danger"
+				{% else %} 
+					class="btn btn-hazard"
+				{% endif %}
+				onclick="window.location.href='{{monthLink.0.0}}'">
   				<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>
-			</button>
+			</button></li>
 				{% set full = True %}
-		
 		{% endif %}
-	{% if not full  and loop.last%}
-<div id="popover-head" class="hide">Some title</div>
-		<div id="popover-content" class="hide">
- 			 <form role="form" action="{{url_for('addEvent')}}" method="post">
+		{% endif %}
+		{% endfor %}
+	{% if loop.last%}
+		</ul>
+		</div>
+		<button  data-toggle="popovers" style="position:absolute;top:0px; left:0px;" type="button" class="btn btn-primary btn-xs" data-content='<form role="form" action="{{url_for('addEvent')}}" method="post">
   			  	<div class="form-group">
   					<label for="name">Event Name:</label>
     				<input name="name" type="input" class="form-control" id="name">
 				</div>
 				<div class="form-group">
     				<label for="start_time">Start Time: "YYYY-MM-DD HH:mm:</label> 
-
-    				<input name="start_time" type="input" class="form-control" id="start_time" ">
+    				<input name="start_time" type="input" class="form-control" id="start_time" value="{{day}}">
   				</div> 
   				<div class="form-group">
     				<label for="end_time">End Time: "YYYY-MM-DD HH:mm:</label> 
-    				<input name="end_time" type="input" class="form-control" id="end_time" >
+    				<input name="end_time" type="input" class="form-control" id="end_time" value={{day}} >
   				</div>
   				
   				<button type="submit" class="btn btn-success">Add Event</button>
-  			</form>
-		</div>
-		</div>
-
-		<button  data-toggle="popover" style="position:absolute;top:0px; left:0px;" type="button" class="btn btn-primary btn-xs" ><span class="glyphicon glyphicon-plus"></span></button>
+  			</form>'>
+			<span class="glyphicon glyphicon-plus">
+			</span>
+		</button>
 	{% endif %}
 
 	{% endfor %}
@@ -100,4 +133,3 @@ $(document).ready(function(){
 {% endfor %}
 </table>
 
-{% endblock %}

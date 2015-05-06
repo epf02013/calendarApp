@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<table class="table-bordered">
+<tr>
+	<td class="dayHeader day"> <center> Name   </center></td>
+	<td class="dayHeader day"> <center> Username  </center></td>
+	<td class="dayHeader day"> <center> Action </center></td>
+</tr>
+
+{% for user in users %}
+<tr> 
+	<td class="name"> {{ user.name }} </td>
+	<td class="username"> {{user.username }}} </td>	
+	<td class="delete">
+		<form method="post" action="{{url_for('manager')}}" role="form">
+			<input type="hidden" name="deleteID" id="deleteID"> 
+			<input type='submit' value='Delete'/> 
+		</form>
+	</td>
+</tr>
+
+{% endfor %}
+</table>
+
+{% endblock %}
