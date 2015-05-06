@@ -4,9 +4,9 @@
 
 For our final project for CS 131 (Distributed Systems) at Claremont McKenna College, we created a Calendar appliation that allows users to organize their events in one place -  similar to Gmail Calendar or the iCal application on Macs. 
 
-Instead of emulating the structure of other Calendar programs, our goal was to add new features that incraesed usability and productivity for our users. Here is a short list of some features that we added: 
-	- *Facebook Integration* : Upon logging in, we use OAUTH and the Facebook Graph API to get information about all of the Facebook events that the user plans to attend. 
-	- *Text/Sentiment Analysis* : Using an external text analysis engine called [Alchemy API](http://alchemyapi.com), we were able to determine the document sentiment (positive, neutral, negative) of each of the users Facebook events. For instance, if the user is attending an event called "Free Donuts Today!!" it would return a positive sentiment, whereas the event "Protest Unfair Wages!" would return a negative sentiment. All of the Facebook events and the corresponding sentiment of each event is shown on the Calendar - see image below. Events in green indicate positive sentiment, gray events are neutral, and red events are negative. 
+Instead of emulating the structure of other Calendar programs, our goal was to add new features that increased usability and productivity for our users. Here is a short list of some features that we added: 
+- *Facebook Integration* : Upon logging in, we use OAUTH and the Facebook Graph API to get information about all of the Facebook events that the user plans to attend. 
+- *Text/Sentiment Analysis* : Using an external text analysis engine called [Alchemy API](http://alchemyapi.com), we were able to determine the document sentiment (positive, neutral, negative) of each of the users Facebook events. For instance, if the user is attending an event called "Free Donuts Today!!" it would return a positive sentiment, whereas the event "Protest Unfair Wages!" would return a negative sentiment. All of the Facebook events and the corresponding sentiment of each event is shown on the Calendar - see image below. Events in green indicate positive sentiment, gray events are neutral, and red events are negative. 
 
 After we completed the additional features described above, our basic goals for the project were met, as we were able to log-in on Facebook, and have all of our events/sentiments shown on the calendar. 
 
@@ -18,8 +18,8 @@ While many of the key ideas from class are implemented in our project, we tried 
 ## Future Plans
 
 If we had more time to work on the project, we would ideally like to :
-	- Integrate user events from other sources (Email, Twitter?)
-	- Allow users to invite other users to events (user-to-user interaction)
+- Integrate user events from other sources (Email, Twitter?)
+- Allow users to invite other users to events (user-to-user interaction)
 
 ## Setup and Running the App
 
