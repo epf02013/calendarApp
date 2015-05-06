@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+<hr> 
+
+<table class="table-bordered">
+<tr>
+	<td class="eventHeader event"> <center>Event</center></td>
+	<td class="deleteHeader del"> <center> Tuesday  </center></td>
+</tr>
+
+{% for nameId in list_of_events %} 
+
+	<tr>
+		<td class="event"><center><h2 class="text-primary">{{nameId.0}}</center></td>
+		<td class="del"><center><form method="post" action="{{url_for('removeEvent')}}"> <input name="idToDelete" type="hidden" value="{{nameId.1}}"><input class="btn btn-danger" type="submit" value="Delete" ></form></center></td>
+	</tr>
+{%endfor%}
+
+{% endblock %}

@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
   <style>
   .grabber{
     font-size: 44px;
@@ -48,6 +47,7 @@
         <ul class="nav navbar-nav navbar-right">
           {% if session['logged_in'] %}
           <li class="active"><a href="/">Home</a></li>
+          <li class="active"><a href="/manageEvents">Manage Events</a></li>
           <li class="active"><a href="/logout">Logout</a></li>
           
 	  {% else %}

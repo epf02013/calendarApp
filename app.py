@@ -30,6 +30,69 @@ def logout():
     session['logged_in']=False
     return render_template("logout.html")
 
+@app.route("/manageEvents")
+def manageEvents():
+    doc=db.get(session['user_id'])
+    doc=doc.value
+    doc=json.loads(doc)
+    temp=json.loads(doc['events'])
+    list_of_personal_events=[]
+    for event in temp['data'] :
+        try :
+            int(event['id'])
+        except :
+            list_of_personal_events.append((event['name'], event['id']))
+            
+    return render_template("manageEvents.html", list_of_events=list_of_personal_events)
+
+@app.route("/removeEvent", methods=['GET', 'POST'])
+def removeEvent():
+    doc=db.get(session['user_id'])
+    doc=doc.value
+    doc=json.loads(doc)
+    pop=json.loads(doc['events'])
+    temp=pop['data']
+    list_of_personal_events=[]
+    print(request.form['idToDelete'])
+    for event in temp :
+        if event['id']==request.form['idToDelete'] :
+            temp.remove(event)
+
+    pop['data']=temp
+    doc['events']=json.dumps(pop)
+    db.set(session['user_id'], json.dumps(doc))
+    list_of_personal_events=[]
+
+      
+    eventsDays={}
+    for event in temp :
+        url="#"
+        try :
+            int(event['id'])
+            url="https://www.facebook.com/events/"+event['id']
+        except :
+            url="#"
+        if int(event['start_time'][8:10]) in eventsDays :
+            temp_list_of_events=eventsDays[int(event['start_time'][8:10])]
+            temp_list_of_events.append(((url, event['sentiment']), (int(event['start_time'][5:7]), (event['name']+"-"+event['start_time'][11:16]))))
+            eventsDays[int(event['start_time'][8:10])]=temp_list_of_events
+        else :
+            temp_list_of_events=[]
+            temp_list_of_events.append(((url, event['sentiment']), (int(event['start_time'][5:7]), (event['name']+"-"+event['start_time'][11:16]))))    
+            eventsDays[int(event['start_time'][8:10])]=temp_list_of_events
+
+        #print(eventsDays)
+    global bDays
+    bDays=eventsDays
+
+
+    for event in temp :
+        try :
+            int(event['id'])
+        except :
+            list_of_personal_events.append((event['name'], event['id']))
+            
+    return render_template("manageEvents.html", list_of_events=list_of_personal_events)
 
 @app.route("/addEvent", methods=['GET', 'POST'])
 def addEvent():
@@ -41,6 +104,40 @@ def addEvent():
     month = time.localtime()[1]
     days = cal.monthdatescalendar(year, month)    
 
+    global bDays
+
+    #Test for imporoper input
+
+    isError=False
+    if request.form['name']=="" :
+        isError=True
+    if request.form['start_time']=="" :
+        isError=True
+    if request.form['end_time']=="" :
+        isError=True
+
+    if isError :
+        return render_template("calendar.html", days=days, bDays=bDays, inputError=True)
+
+    if len(request.form['start_time'])<16 :
+        the_start_time=request.form['start_time']+" 00:00:00"
+
+    if len(request.form['end_time'])<16 :
+        the_end_time=request.form['end_time']+" 00:00:00"
+
+    doc=db.get(session['user_id'])
+    doc=doc.value
+    doc=json.loads(doc)
+    print (doc['events'])
+    pop=json.loads(doc['events'])
+    temp=pop['data']
+    print('HOOOOOOP'+json.dumps(temp))
+    new_event = {}
+    new_event["name"] = request.form["name"]
+    new_event["id"] = request.form["name"]+request.form['start_time'] 
+    new_event['start_time']=the_start_time
+    new_event['end_time']=the_end_time
+    temp_event=format_event(new_event)
     # call db to get user events
     doc = db.get(session['user_id'])
     doc = doc.value
@@ -54,17 +151,31 @@ def addEvent():
     new_event["id"] = request.form["name"]+request.form['start_time'] 
     new_event['start_time'] = request.form['start_time']
     new_event['end_time'] = request.form['end_time']
+
     temp.append(format_event(new_event))
     pop['data']=temp
     doc['events']=json.dumps(pop)
     # store the JSON blob into DB with primary key: user_id
     db.set(session['user_id'], json.dumps(doc))
+    print("PLOP"+doc['events'])
     
-    global bDays
     temp=bDays
-    temp[int(new_event['start_time'][8:10])]=("plop", int(request.form['start_time'][5:7]))
+    print("OYOYOY")
+    print(request.form['start_time'])
+    print(int(new_event['start_time'][8:10]))
+   # print(temp[int(new_event['start_time'][8:10])])
+    print(bDays)
+    if int(new_event['start_time'][8:10]) in temp :
+        temp_list_of_events=temp[int(new_event['start_time'][8:10])]
+    else :
+        temp_list_of_events=[]
+    print(temp_list_of_events)
+    temp_list_of_events.append((("#", temp_event['sentiment']), (int(request.form['start_time'][5:7]), (temp_event['name']+"-"+temp_event['start_time'][11:16]))))
+    temp[int(new_event['start_time'][8:10])]=temp_list_of_events
     bdays=temp
-    return render_template("calendar.html", days=days, bDays=bDays)
+    print("woah woah woah")
+    print(bDays)
+    return render_template("calendar.html", days=days, bDays=bDays, inputError=False)
 
 
 @app.route("/logged_in", methods=['GET', 'POST'])
@@ -109,35 +220,51 @@ def logged_in():
         db.set(user_id, json.dumps(doc))
     
     eventsDays={}
+
     for event in temp['data'] :
-        eventsDays[int(event['start_time'][8:10])]=("https://www.facebook.com/events/"+event['id'], int(event['start_time'][5:7]))
+        #print("lopp")
+        #print(event)
+        url="#"
+        try :
+            int(event['id'])
+            url="https://www.facebook.com/events/"+event['id']
+        except :
+            url="#"
+        if int(event['start_time'][8:10]) in eventsDays :
+            temp_list_of_events=eventsDays[int(event['start_time'][8:10])]
+            temp_list_of_events.append(((url, event['sentiment']), (int(event['start_time'][5:7]), (event['name']+"-"+event['start_time'][11:16]))))
+            eventsDays[int(event['start_time'][8:10])]=temp_list_of_events
+        else :
+            temp_list_of_events=[]
+            temp_list_of_events.append(((url, event['sentiment']), (int(event['start_time'][5:7]), (event['name']+"-"+event['start_time'][11:16]))))    
+            eventsDays[int(event['start_time'][8:10])]=temp_list_of_events
+
+        #print(eventsDays)
     global bDays
     bDays=eventsDays
     return render_template("calendar.html", days=days, bDays=bDays)
 
-@app.route("/manager", methods=["GET", "POST"])
-def manager():
+#@app.route("/manager", methods=["GET", "POST"])
+#def manager():
     
-    if session.get("isAdmin") :
-        q = Query
-        q.limit = 100
-        q.skip = 1
-        users = {"tim": "timkaye", "ethan" : "ethanCaleb"}
-        return render_template("manager.html", users=users)
-    else :
-        return render_template("login.html")
+#    if session.get("isAdmin") :
+#        q = Query
+#        q.limit = 100
+#        q.skip = 1
+#        users = {"tim": "timkaye", "ethan" : "ethanCaleb"}
+#        return render_template("manager.html", users=users)
+#    else :
+#        return render_template("login.html")
 
-    if request.method == "POST": 
-        # Oh, we got a post request
-        userToDelete = str(request.form["deleteID"])
-        try: 
-            db.delete(userToDelete)
-        except KeyExistsError :
-            print "Couldn't delete userID: %s" % userToDelete
+#    if request.method == "POST": 
+#        # Oh, we got a post request
+#        userToDelete = str(request.form["deleteID"])
+#        try: 
+#            db.delete(userToDelete)
+#        except KeyExistsError :
+#            print "Couldn't delete userID: %s" % userToDelete
 
-        return render_template("manager.html")
-
-
+#        return render_template("manager.html")
 
 
 @app.route("/")
@@ -153,7 +280,7 @@ def index() :
 
     try:
         if (session['logged_in']) :
-            return render_template("calendar.html", days =days, bDays=bDays)
+            return render_template("calendar.html", days =days, bDays=bDays, inputError=False)
         else:
             return render_template("login.html")
     except KeyError:
