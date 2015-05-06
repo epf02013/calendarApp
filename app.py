@@ -157,6 +157,12 @@ def index() :
     except KeyError:
         return render_template("login.html")
 
+# handle error pages
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+    
 
 # this is where we run the app!
 if __name__ == "__main__" : 
