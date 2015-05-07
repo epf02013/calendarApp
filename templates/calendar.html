@@ -20,17 +20,15 @@ $(document).ready(function(){
 });
 </script>
 
-
+<!--Tests To see if there is an error-->
 {% if inputError %}
 
 	<h2 class="text-danger">Uh oh Looks Like you entered Something Incorrectly</h2>
 
 {% endif %}
 
-<hr> 
-
 <table class="table-bordered">
-<tr>
+<tr>  <!--Header row for the Table-->
 	<td class="dayHeader day"> <center> Monday   </center></td>
 	<td class="dayHeader day"> <center> Tuesday  </center></td>
 	<td class="dayHeader day"> <center>Wednesday </center></td>
@@ -40,9 +38,10 @@ $(document).ready(function(){
 	<td class="dayHeader day"> <center>Sunday    </center></td>
 </tr>
 
-{% for week in days %} 
+{% for week in days %} <!--Loop for each week-->
 
-	<tr>
+	<tr> 
+
 		{% for day in week %}
 		<td class="day" style="height:100px; width:100px;position:relative;"> 
 			<span style="position:absolute; top:0px;right:0px;">
@@ -55,9 +54,12 @@ $(document).ready(function(){
 
 	{% set full= False%} <!--Boolean for whether or not an event was added in this day-->		
 	
-	{% for dayy, set_of_events in bDays.items() %}
+	{% for dayy, set_of_events in url_sentiment_startTime_name.items() %}
 	<!-- can remove the not full  check here and maybe do a for loop-->
-	{% if dayy==day.day and not full %}
+
+		{% for monthLink in set_of_events  %}
+
+	{% if not full and monthLink.1.0==day.month and dayy==day.day%}
 		<div class="dropdown" style="position:absolute;bottom:-0px; left:0px;">
   <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" >Events
   <span class="caret"></span></button>
@@ -65,7 +67,7 @@ $(document).ready(function(){
 		{% set full=true %}
 	{% endif %}
 
-		{% for monthLink in set_of_events  %}
+
 		{% if dayy==day.day and monthLink.1.0==day.month %}
 			{% if monthLink.0.0=="#" %}				
     				<li><button data-toggle="popover"

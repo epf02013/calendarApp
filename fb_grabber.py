@@ -58,9 +58,9 @@ def format_event(event) :
         new_event = {}
         new_event["name"] = event["name"]
         new_event["id"] = event["id"]
-        new_event["start_time"] = arrow.get(event["start_time"]).format("YYYY-MM-DD HH:mm:ss")
+        new_event["start_time"] = event["start_time"]
         if "end_time" in event.keys(): 
-            new_event["end_time"] = arrow.get(event["end_time"]).format("YYYY-MM-DD HH:mm:ss")
+            new_event["end_time"] = event["end_time"]
 
         # now add the document sentiment stuff
         response = get_sentiment(str(event["name"]))
