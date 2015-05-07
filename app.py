@@ -268,28 +268,6 @@ def logged_in():
     #returns rendering of calendar Page
     return render_template("calendar.html", days=days, url_sentiment_startTime_name=url_sentiment_startTime_name)
 
-#@app.route("/manager", methods=["GET", "POST"])
-#def manager():
-    
-#    if session.get("isAdmin") :
-#        q = Query
-#        q.limit = 100
-#        q.skip = 1
-#        users = {"tim": "timkaye", "ethan" : "ethanCaleb"}
-#        return render_template("manager.html", users=users)
-#    else :
-#        return render_template("login.html")
-
-#    if request.method == "POST": 
-#        # Oh, we got a post request
-#        userToDelete = str(request.form["deleteID"])
-#        try: 
-#            db.delete(userToDelete)
-#        except KeyExistsError :
-#            print "Couldn't delete userID: %s" % userToDelete
-
-#        return render_template("manager.html")
-
 
 #Home page returns rendering of calendar if logged in otherwise redirects to Login
 @app.route("/")
