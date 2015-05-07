@@ -37,4 +37,4 @@ First install Flask, Couchbase and request an Alchemy API access-token. Then sta
 
 If you direct your web-browser to `http://localhost:5000`, you should see the screen below. 
 
-![home-page](home_page.jpg)
+![home-page](img/home_page.jpg)
