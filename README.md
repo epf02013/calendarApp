@@ -8,6 +8,8 @@ Instead of emulating the structure of other Calendar programs, our goal was to a
 - *Facebook Integration* : Upon logging in, we use OAUTH and the Facebook Graph API to get information about all of the Facebook events that the user plans to attend. 
 - *Text/Sentiment Analysis* : Using an external text analysis engine called [Alchemy API](http://alchemyapi.com), we were able to determine the document sentiment (positive, neutral, negative) of each of the users Facebook events. For instance, if the user is attending an event called "Free Donuts Today!!" it would return a positive sentiment, whereas the event "Protest Unfair Wages!" would return a negative sentiment. All of the Facebook events and the corresponding sentiment of each event is shown on the Calendar - see image below. Events in green indicate positive sentiment, gray events are neutral, and red events are negative. 
 
+![red-green](img/todays_events.jpg)
+
 After we completed the additional features described above, our basic goals for the project were met, as we were able to log-in on Facebook, and have all of our events/sentiments shown on the calendar. 
 
 
