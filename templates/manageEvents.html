@@ -2,20 +2,24 @@
 
 
 {% block body %}
-<hr> 
+<!-- Table with all of the events in 
+left column and delete button on the right-->
 
-<table class="table-bordered">
+<center>
+<table class="table-bordered" border="3">
 <tr>
-	<td class="eventHeader event"> <center>Event</center></td>
-	<td class="deleteHeader del"> <center> Tuesday  </center></td>
+	<td class="eventHeader event"> <center><h2 class="text-primary">Event</h2></center></td>
+	<td class="deleteHeader del"> <center><h2 class="text-primary"> Remove</h2>  </center></td>
 </tr>
 
 {% for nameId in list_of_events %} 
 
 	<tr>
-		<td class="event"><center><h2 class="text-primary">{{nameId.0}}</center></td>
+		<td class="event"><center><h3 class="text-success">{{nameId.0}}</h3></center></td>
 		<td class="del"><center><form method="post" action="{{url_for('removeEvent')}}"> <input name="idToDelete" type="hidden" value="{{nameId.1}}"><input class="btn btn-danger" type="submit" value="Delete" ></form></center></td>
 	</tr>
 {%endfor%}
+</table>
+</center>
 
 {% endblock %}
